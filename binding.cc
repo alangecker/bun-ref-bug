@@ -1,5 +1,3 @@
-
-#include <libusb.h>
 #include <napi.h>
 
 struct Device: public Napi::ObjectWrap<Device> {
@@ -13,21 +11,13 @@ struct Device: public Napi::ObjectWrap<Device> {
 
 Napi::Value testMethod(const Napi::CallbackInfo& info) {
     Napi::Env env = info.Env();
-    Napi::HandleScope scope(env);
-
-    libusb_device** devs;
-    libusb_context* usb_context = nullptr;
-    libusb_init(&usb_context);
-    libusb_get_device_list(usb_context, &devs);
-
     auto func = Device::DefineClass(
         env,
         "Device",
         {});
     
-    Napi::Persistent(func).New({ Napi::External<libusb_device>::New(env, devs[0]) });
+    func.New({});
 
-    libusb_free_device_list(devs, true);
     return env.Undefined();
 }
 
